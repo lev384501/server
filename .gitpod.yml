@@ -1,0 +1,21 @@
+image: gitpod/workspace-full
+
+tasks:
+  - name: Setup Minecraft Server
+    init: |
+      sudo apt update
+      sudo apt install openjdk-8-jdk -y
+      wget https://papermc.io/api/v1/paper/1.12.2/latest/download -O server.jar
+      java -Xmx1024M -Xms512M -jar server.jar
+    command: |
+      if [ ! -f eula.txt ]; then
+        java -Xmx1024M -Xms512M -jar server.jar
+        sleep 5
+      fi
+      sed -i 's/eula=false/eula=true/g' eula.txt
+      echo "Запуск сервера..."
+      java -Xmx1024M -Xms512M -jar server.jar nogui
+
+ports:
+  - port: 25565
+    onOpen: open-preview
